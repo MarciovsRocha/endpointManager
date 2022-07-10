@@ -3,13 +3,13 @@ namespace endpointManager
     public class Application : IApplication
     {
         // private declarations
-        private List<Endpoint> _endpoints;
         private Menu _menu;
+        private LogicLayer _logicLayer;
 
         // implementation
         
-        public Application(List<Endpoint> endpoints, Menu menu){
-            this._endpoints = endpoints;            
+        public Application(LogicLayer logicLayer, Menu menu){
+            this._logicLayer = logicLayer;
             this._menu = menu;
             while(true){
                 try { start(); }
@@ -69,19 +69,12 @@ namespace endpointManager
                 Console.Clear();                
                 Console.WriteLine(this._menu.DeleteEndpoint);           
                 Endpoint ?e = FindEndpoint();                                 
-                Console.WriteLine(e.Info);
-                string userInput = ".";
-                string[] options = {"yes","y","no","n"};
-                while (!options.Contains(userInput)){
-                    userInput = ForceUserInput(this._menu.Confirm);
-                    userInput = userInput.ToLower();
-                }
-                if (("yes" == userInput) || ("y" == userInput)){
-                    this._endpoints.Remove(e);
+                Console.WriteLine(e.Info);                
+                if (Confirm()){
+                    this._logicLayer.Delete(e.SerialNumber);
                     Pause("Endpoint remove sucessfuly.");
-                }else if (("no" == userInput) || ("n" == userInput)){
-                    Pause("Operation aborted.");
-                }                
+                }else
+                    Pause("Operation aborted.");            
             }
             catch (EndpointNotFoundError){
                 Pause("Not found an Endpoint with specified Serial Number.");
@@ -92,21 +85,14 @@ namespace endpointManager
             try{                 
                 Console.Clear();                
                 Console.WriteLine(this._menu.EditEndpoint);           
-                Endpoint ?e = FindEndpoint();                                 
+                Endpoint ?e = FindEndpoint();
                 Console.WriteLine(e.Info);
-                string newState = ForceUserInput(this._menu.NewState);
-                string userInput = ".";
-                string[] options = {"yes","y","no","n"};
-                while (!options.Contains(userInput)){
-                    userInput = ForceUserInput(this._menu.Confirm);
-                    userInput = userInput.ToLower();
-                }
-                if (("yes" == userInput) || ("y" == userInput)){
-                    e.State = newState;
+                string newState = ForceUserInput(this._menu.NewState);                
+                if (Confirm()){
+                    this._logicLayer.Edit(e.SerialNumber, newState);
                     Pause("Endpoint state edited sucessfuly.");
-                }else if (("no" == userInput) || ("n" == userInput)){
-                    Pause("Operation aborted.");
-                }                
+                }else
+                    Pause("Operation aborted.");                                
             }
             catch (EndpointNotFoundError){
                 Pause("Not found an Endpoint with specified Serial Number.");
@@ -116,50 +102,23 @@ namespace endpointManager
         public void ListEndpoints(){
             Console.Clear();
             Console.WriteLine(this._menu.ListEndpoints);
-            foreach (Endpoint item in this._endpoints)
-            {
-                Console.WriteLine(item.Info);
-            }
-            Pause("");
+            Pause(this._logicLayer.List());
         }
 
         private Endpoint FindEndpoint(){
             string serialNumber = ForceUserInput(this._menu.RequestSerialNumber);
-            return FindEndpoint(serialNumber);
-        }
-
-        private Endpoint FindEndpoint(string serial){
-            Endpoint ?e = this._endpoints.FirstOrDefault(i => i.SerialNumber == serial);
-            if (null == e)
-                throw new EndpointNotFoundError(serial);
-            return e;
+            return this._logicLayer.Search(serialNumber);
         }
 
         public void InsertEndpoint(){
             Console.Clear();
             Console.WriteLine(this._menu.InsertEndpoint);
-
             string serialNumber = ForceUserInput(this._menu.RequestSerialNumber);
             string model = ForceUserInput(this._menu.RequestModel);
             int number = ForceUserInputInt(this._menu.RequestModelNumber);
             string firmwareVersion = ForceUserInput(this._menu.RequestFirmwareVersion);
             string state = ForceUserInput(this._menu.RequestState);
-
-            bool existsSerialNumber = false;
-            try{
-                FindEndpoint(serialNumber);
-                existsSerialNumber = true;
-            }
-            catch (System.Exception){}                
-            finally{
-                if (!existsSerialNumber){
-                    Endpoint newEndpoint = new Endpoint(serialNumber, model, number, firmwareVersion, state);
-                    this._endpoints.Add(newEndpoint);
-                }else
-                {
-                    throw new SerialNumberAlreadyExists(serialNumber);
-                }
-            }            
+            this._logicLayer.Insert(serialNumber, model, number, firmwareVersion, state);
         }
 
         private string ForceUserInput(string ?message){
@@ -185,6 +144,16 @@ namespace endpointManager
                     Console.WriteLine("\nPlease enter an valid Integer value.");
             }
             return val;
+        }
+
+        private bool Confirm(){
+            string userInput = ".";
+            string[] options = {"yes","y","no","n"};
+            while (!options.Contains(userInput)){
+                userInput = ForceUserInput(this._menu.Confirm);
+                userInput = userInput.ToLower();
+            }
+            return ((userInput == "yes") || (userInput == "y"));
         }
 
         private void InvalidOption(string ?o){
