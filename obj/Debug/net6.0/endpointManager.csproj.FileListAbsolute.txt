@@ -1,0 +1,15 @@
+/storage/projetos/endpointManager/obj/Debug/net6.0/endpointManager.csproj.AssemblyReference.cache
+/storage/projetos/endpointManager/obj/Debug/net6.0/endpointManager.GeneratedMSBuildEditorConfig.editorconfig
+/storage/projetos/endpointManager/obj/Debug/net6.0/endpointManager.AssemblyInfoInputs.cache
+/storage/projetos/endpointManager/obj/Debug/net6.0/endpointManager.AssemblyInfo.cs
+/storage/projetos/endpointManager/obj/Debug/net6.0/endpointManager.csproj.CoreCompileInputs.cache
+/storage/projetos/endpointManager/bin/Debug/net6.0/endpointManager
+/storage/projetos/endpointManager/bin/Debug/net6.0/endpointManager.deps.json
+/storage/projetos/endpointManager/bin/Debug/net6.0/endpointManager.runtimeconfig.json
+/storage/projetos/endpointManager/bin/Debug/net6.0/endpointManager.dll
+/storage/projetos/endpointManager/bin/Debug/net6.0/ref/endpointManager.dll
+/storage/projetos/endpointManager/bin/Debug/net6.0/endpointManager.pdb
+/storage/projetos/endpointManager/obj/Debug/net6.0/endpointManager.dll
+/storage/projetos/endpointManager/obj/Debug/net6.0/ref/endpointManager.dll
+/storage/projetos/endpointManager/obj/Debug/net6.0/endpointManager.pdb
+/storage/projetos/endpointManager/obj/Debug/net6.0/endpointManager.genruntimeconfig.cache
