@@ -1,5 +1,8 @@
 namespace endpointManager
 {
+    /// <summary>
+    /// classe com strings padronizadas e formatadas para utilização na Application
+    /// </summary>
     public class Menu : IMenu
     {
         public string MenuPrincipal { 
