@@ -17,6 +17,9 @@ namespace endpointManager
             }            
         }
 
+        /// <summary>
+        /// método que contém o menu principal e cuidará da seleção de "modulos" para usuário
+        /// </summary>
         private void start(){
             Console.Clear();
             Console.Write(this._menu.MenuPrincipal);
@@ -53,6 +56,9 @@ namespace endpointManager
             }
         }
 
+        /// <summary>
+        /// método que busca um endpoint cadastrado e imprime suas informações
+        /// </summary>
         public void SearchEndpoint(){
             try{ 
                 Endpoint ?e = FindEndpoint(); 
@@ -64,6 +70,12 @@ namespace endpointManager
             }                                             
         }
 
+        /// <summary>
+        /// método para cuidar do procedimento de exclusão de um endpoint, 
+        /// realiza a pesquisa do Endpoint a ser excluído pelo Número de Série
+        /// mostra as informações deste Endpoint na tela
+        /// e solicita confirmação do usuário, caso não confirmado aborta a operação
+        /// </summary>
         public void DeleteEndpoint(){                        
             try{                 
                 Console.Clear();                
@@ -81,6 +93,13 @@ namespace endpointManager
             }            
         }
 
+        /// <summary>
+        /// método para cuidar do procedimento de edição de um endpoint, 
+        /// realiza a pesquisa do Endpoint a ser editado pelo Número de Série
+        /// mostra as informações deste Endpoint na tela
+        /// solicita o novo estado que será atribuido ao Endpoint
+        /// e solicita confirmação do usuário, caso não confirmado aborta a operação
+        /// </summary>
         public void EditEndpoint(){
             try{                 
                 Console.Clear();                
@@ -99,17 +118,29 @@ namespace endpointManager
             }      
         }
 
+        /// <summary>
+        /// método para listar todos os Endpoints cadastrados e suas respectivas informações
+        /// </summary>
         public void ListEndpoints(){
             Console.Clear();
             Console.WriteLine(this._menu.ListEndpoints);
             Pause(this._logicLayer.List());
         }
 
+        /// <summary>
+        /// força o usuário a realizar o input de um número inteiro, mostrando a mensagem customizada de solicitação quando informada
+        /// </summary>
+        /// <params name="message">mensagem customizada a ser informada a cada solicitação</params>
         private Endpoint FindEndpoint(){
             string serialNumber = ForceUserInput(this._menu.RequestSerialNumber);
             return this._logicLayer.Search(serialNumber);
         }
 
+        /// <summary>
+        /// método para cuidar do procedimento de inserção de um novo Endpoint
+        /// solicita todas as informações ao usuário, e realiza inserção do Endpoint
+        /// </summary>
+        /// <exception cref="SerialNumberAlreadyExists">Erro gerado ao tentar cadastrar um Endpoint em que o Serial Number já esteja cadastrado para outro Endpoint</exception>
         public void InsertEndpoint(){
             Console.Clear();
             Console.WriteLine(this._menu.InsertEndpoint);
@@ -121,6 +152,10 @@ namespace endpointManager
             this._logicLayer.Insert(serialNumber, model, number, firmwareVersion, state);
         }
 
+        /// <summary>
+        /// força o usuário a realizar o input, mostrando a mensagem customizada de solicitação quando informada
+        /// </summary>
+        /// <params name="message">mensagem customizada a ser informada a cada solicitação</params>
         private string ForceUserInput(string ?message){
             string ?s = "";
             while (string.IsNullOrEmpty(s)){
@@ -133,6 +168,10 @@ namespace endpointManager
             return s;
         }
 
+        /// <summary>
+        /// força o usuário a realizar o input de um número inteiro, mostrando a mensagem customizada de solicitação quando informada
+        /// </summary>
+        /// <params name="message">mensagem customizada a ser informada a cada solicitação</params>
         private int ForceUserInputInt(string ?message){
             string ?s = "";
             int val = -1;
@@ -146,6 +185,13 @@ namespace endpointManager
             return val;
         }
 
+        /// <summary>
+        /// método para realizar confirmação de operações com usuário
+        /// </summary>
+        /// <returns>
+        ///     true: caso o usuário confirme com ([y]es)
+        ///     false: caso o usuário confirme com ([n]o)
+        /// </returns>
         private bool Confirm(){
             string userInput = ".";
             string[] options = {"yes","y","no","n"};
@@ -156,14 +202,20 @@ namespace endpointManager
             return ((userInput == "yes") || (userInput == "y"));
         }
 
+        /// <summary>
+        /// método para tratar opção inválida
+        /// </summary>
         private void InvalidOption(string ?o){
             if (!string.IsNullOrEmpty(o))
-                Console.WriteLine($"Invalid Option '{o}'.\nPress [Enter] to continue.");
+                Pause($"Invalid Option '{o}'.\nPress [Enter] to continue.");
             else
-                Console.WriteLine("Invalid Option.\nPress [Enter] to continue.");
-            Console.ReadLine();
+                Pause("Invalid Option.\nPress [Enter] to continue.");
         }
 
+        /// <summary>
+        /// método para "forçar" uma pausa no sistema com mensagens customizadas
+        /// </summary>
+        /// <param name="message">Mensagem customizada a ser impressa</param>
         private void Pause(string ?message){
             if (!string.IsNullOrEmpty(message))
                 Console.WriteLine(message);
@@ -171,6 +223,9 @@ namespace endpointManager
             Console.ReadLine();
         }
 
+        /// <summary>
+        /// realiza finalização da aplicação
+        /// </summary>
         private void exit(){
             Console.Clear();
             Console.WriteLine("Bye!");
